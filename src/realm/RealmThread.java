@@ -25,7 +25,6 @@ public class RealmThread implements Runnable {
 	private String _hashKey;
 	private int _packetNum = 0;
 	private String _accountName;
-	private String _hashPass;
 	private Account _compte;
 	public static ComThread exchangeThread;
 	public static ComServer exchangeServer;
@@ -62,7 +61,7 @@ public class RealmThread implements Runnable {
 	{
 		try
 		{
-			String packet = "";
+			StringBuilder packet = new StringBuilder();
 			char charCur[] = new char[1];
 			
 			SocketManager.SEND_POLICY_FILE(_out);
@@ -72,8 +71,8 @@ public class RealmThread implements Runnable {
 			{
 				if(charCur[0] != '\u0000' && charCur[0] != '\n' && charCur[0] != '\r')
 				{
-					packet += charCur[0];
-				}else if(!packet.isEmpty())
+					packet.append(charCur[0]);
+				}else if(packet.length() > 0)
 				{
 					Main.agregaralogdemulti("Realm: Recv << "+packet);
 					if(Main.REALM_DEBUG)
@@ -82,8 +81,8 @@ public class RealmThread implements Runnable {
 						Main.agregaralogdemulti("Realm: Recv << "+packet);
 					}
 					_packetNum++;
-					parsePacket(packet);
-					packet = "";
+					parsePacket(packet.toString());
+					packet = new StringBuilder();
 				}
 			}
 		}catch(IOException e)
@@ -185,17 +184,16 @@ public class RealmThread implements Runnable {
 				kick();
 				return;
 			}
-			
-			_hashPass = packet;
+
 			Account acc = Realm.getCompteByName(_accountName);
 			
-			if(acc != null && acc.isValidPass(_hashPass, _hashKey))//Si il existe alors il est connect� au Realm && mot de passe OK
+			if(acc != null && acc.isValidPass(packet, _hashKey))//Si il existe alors il est connect� au Realm && mot de passe OK
 			{
 				SocketManager.SEND_ALREADY_CONNECTED(acc.getRealmThread()._out);
 				SocketManager.SEND_ALREADY_CONNECTED(_out);
 				return;
 			}
-			if(acc != null && !acc.isValidPass(_hashPass, _hashKey))//Si il existe alors il est connect� au Realm && mot de passe Invalide
+			if(acc != null && !acc.isValidPass(packet, _hashKey))//Si il existe alors il est connect� au Realm && mot de passe Invalide
 			{
 				SocketManager.SEND_LOGIN_ERROR(_out);
 				return;
@@ -211,7 +209,7 @@ public class RealmThread implements Runnable {
 				return;
 			}
 			
-			if(!_compte.isValidPass(_hashPass, _hashKey))//Mot de passe invalide
+			if(!_compte.isValidPass(packet, _hashKey))//Mot de passe invalide
 			{
 				SocketManager.SEND_LOGIN_ERROR(_out);
 				return;
@@ -253,45 +251,42 @@ public class RealmThread implements Runnable {
 		break;
 		default:
 			String ip2 = _s.getInetAddress().getHostAddress();
-			if(packet.substring(0, 2).equals("Af"))
-			{
-				int queueID = 1;
-				int position = 1;
-				_packetNum--;
-				SocketManager.SEND_Af_PACKET(_out, position, 1, 1, 0, queueID);
-			}else
-			if(packet.substring(0, 2).equals("Ax"))
-			{
-				if (_compte == null)return;
-				SocketManager.SEND_PERSO_LIST(_out, _compte.get_subscriberTime(), _compte.get_GUID());
-			}else
-			if(packet.substring(0, 2).equals("AX"))
-			{
-				int number = Integer.parseInt(packet.substring(2,3));
-				Realm.GameServers.get(number).getThread().sendGetOnline();
-				
-				try
-				{
-					Thread.sleep(2000);
-				}catch(Exception e){}
-				
-				int ActualP = Realm.GameServers.get(number).get_NumPlayer();
-				int MaxP = Realm.GameServers.get(number).get_PlayerLimit();
-				
-				if(ActualP >= MaxP)
-				{
-					SocketManager.SEND_TOO_MANY_PLAYER_ERROR(_out);
-					return;
-				}
-				System.out.println("RealmThreadOUT : Connexion to the server with the following ip:" +ip2);
-				Main.agregaralogdemulti("RealmThreadOUT : Connexion to the server with the following ip:" +ip2);
-				SocketManager.SEND_GAME_SERVER_IP(_out, _compte.get_GUID(), number);
-			}else
-			if(packet.substring(0, 2).equals("AF"))
-			{
-				//TODO
-				@SuppressWarnings("unused")
-				String name = packet.substring(2);
+			switch (packet.substring(0, 2)) {
+				case "Af":
+					int queueID = 1;
+					int position = 1;
+					_packetNum--;
+					SocketManager.SEND_Af_PACKET(_out, position, 1, 1, 0, queueID);
+					break;
+				case "Ax":
+					if (_compte == null) return;
+					SocketManager.SEND_PERSO_LIST(_out, _compte.get_subscriberTime(), _compte.get_GUID());
+					break;
+				case "AX":
+					int number = Integer.parseInt(packet.substring(2, 3));
+					Realm.GameServers.get(number).getThread().sendGetOnline();
+
+					try {
+						Thread.sleep(2000);
+					} catch (Exception e) {
+					}
+
+					int ActualP = Realm.GameServers.get(number).get_NumPlayer();
+					int MaxP = Realm.GameServers.get(number).get_PlayerLimit();
+
+					if (ActualP >= MaxP) {
+						SocketManager.SEND_TOO_MANY_PLAYER_ERROR(_out);
+						return;
+					}
+					System.out.println("RealmThreadOUT : Connexion to the server with the following ip:" + ip2);
+					Main.agregaralogdemulti("RealmThreadOUT : Connexion to the server with the following ip:" + ip2);
+					SocketManager.SEND_GAME_SERVER_IP(_out, _compte.get_GUID(), number);
+					break;
+				case "AF":
+					//TODO
+					@SuppressWarnings("unused")
+					String name = packet.substring(2);
+					break;
 			}
 		break;
 		}

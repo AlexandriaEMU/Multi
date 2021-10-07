@@ -8,9 +8,9 @@ import objects.GameServer;
 
 public class Realm
 {
-	private static Map<Integer, Account> Accounts = new TreeMap<Integer,Account>();//by GUID
-	private static Map<String, Integer> Accounts2 = new TreeMap<String, Integer>();//by Name
-	public static Map<Integer, GameServer> GameServers = new TreeMap<Integer, GameServer>();
+	private static final Map<Integer, Account> Accounts = new TreeMap<>();//by GUID
+	private static final Map<String, Integer> Accounts2 = new TreeMap<>();//by Name
+	public static Map<Integer, GameServer> GameServers = new TreeMap<>();
 	public static String BAN_IP = "";
 	
 	public static boolean IPcompareToBanIP(String ip)

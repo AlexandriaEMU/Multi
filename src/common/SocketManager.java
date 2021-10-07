@@ -18,8 +18,8 @@ public class SocketManager
 			out.flush();
 			if(Main.REALM_DEBUG)
 			{
-				Main.agregaralogdemulti("Realm: Send>>"+packet.toString());
-				System.out.println("Realm: Send>>"+packet);
+				Main.agregaralogdemulti("REALM: Envia>>"+packet.toString());
+				System.out.println("REALM: Envia>>"+packet);
 			}
 		}
 	}
@@ -95,8 +95,7 @@ public class SocketManager
 		StringBuilder packet = new StringBuilder();
 		packet.append("Ad").append(pseudo).append((char)0x00);
 		packet.append("Ac0").append((char)0x00);
-		ArrayList<GameServer> list = new ArrayList<GameServer>();
-		list.addAll(Realm.GameServers.values());
+		ArrayList<GameServer> list = new ArrayList<>(Realm.GameServers.values());
 		boolean isFirst  = true;
 		for (GameServer G : list)
 		{
@@ -142,8 +141,7 @@ public class SocketManager
 	
 	public static void refresh(PrintWriter out)
 	{
-		ArrayList<GameServer> list = new ArrayList<GameServer>();
-		list.addAll(Realm.GameServers.values());
+		ArrayList<GameServer> list = new ArrayList<>(Realm.GameServers.values());
 		StringBuilder packet = new StringBuilder();
 		boolean isFirst  = true;
 		for (GameServer G : list)
@@ -160,9 +158,8 @@ public class SocketManager
 	public static void SEND_PERSO_LIST(PrintWriter out, int subscriber, int number) 
 	{
 		StringBuilder packet = new StringBuilder();
-		packet.append("AxK").append((subscriber*60)+"000");//Conversion en millisecondes
-		ArrayList<GameServer> list = new ArrayList<GameServer>();
-		list.addAll(Realm.GameServers.values());
+		packet.append("AxK").append(subscriber * 60).append("000");//Conversion en millisecondes
+		ArrayList<GameServer> list = new ArrayList<>(Realm.GameServers.values());
 		
 		for (GameServer G : list)
 		{

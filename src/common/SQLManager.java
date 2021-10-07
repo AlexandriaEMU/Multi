@@ -11,18 +11,16 @@ import java.util.TimerTask;
 import objects.Account;
 import objects.GameServer;
 
-import com.mysql.jdbc.PreparedStatement;
+import com.mysql.cj.jdbc.ClientPreparedStatement;
 
-public class SQLManager
-{
+public class SQLManager {
 	private static Connection othCon;
 
 	private static Timer timerCommit;
 	private static boolean needCommit;
 	
 	
-	public synchronized static ResultSet executeQuery(String query,String DBNAME) throws SQLException
-	{
+	public synchronized static ResultSet executeQuery(String query,String DBNAME) throws SQLException {
 		if(!Main.isInit)
 			return null;
 		Connection DB = othCon;
@@ -34,8 +32,7 @@ public class SQLManager
 		return RS;
 	}
 	
-	public synchronized static ResultSet executeQueryG(String query, GameServer G) throws SQLException
-	{
+	public synchronized static ResultSet executeQueryG(String query, GameServer G) throws SQLException {
 		if (!Main.isInit)
 			return null;
 		try
@@ -57,9 +54,9 @@ public class SQLManager
 		}
 	}
 	
-	public synchronized static PreparedStatement newTransact(String baseQuery,Connection dbCon) throws SQLException
+	public synchronized static ClientPreparedStatement newTransact(String baseQuery,Connection dbCon) throws SQLException
 	{
-		PreparedStatement toReturn = (PreparedStatement) dbCon.prepareStatement(baseQuery);
+		ClientPreparedStatement toReturn = (ClientPreparedStatement) dbCon.prepareStatement(baseQuery);
 		
 		needCommit = true;
 		return toReturn;
@@ -103,7 +100,7 @@ public class SQLManager
 		}
 	}
 	
-	public static final boolean setUpConnexion()
+	public static boolean setUpConnexion()
 	{
 		try
 		{
@@ -163,7 +160,7 @@ public class SQLManager
 		}
 	}
 	
-	private static void closePreparedStatement(PreparedStatement p)
+	private static void closePreparedStatement(ClientPreparedStatement p)
 	{
 		try
 		{
@@ -184,7 +181,7 @@ public class SQLManager
 		else bquery = "UPDATE accounts SET `curIP`=? WHERE `guid`=? ;";
 		try
 		{
-			PreparedStatement p = newTransact(bquery, othCon);
+			ClientPreparedStatement p = newTransact(bquery, othCon);
 			p.setString(1, ip);
 			if(UpdateSub) p.setInt(2, Sub);
 			p.setInt((UpdateSub?3:2), guid);
@@ -209,7 +206,7 @@ public class SQLManager
 		String bquery = "UPDATE accounts SET `curIP`=?;";
 		try
 		{
-			PreparedStatement p = newTransact(bquery, othCon);
+			ClientPreparedStatement p = newTransact(bquery, othCon);
 			p.setString(1, "");
 			p.execute();
 			closePreparedStatement(p);
@@ -343,7 +340,7 @@ public class SQLManager
 		String baseQuery = "INSERT INTO `banip` VALUES (?);";
 		try
 		{
-			PreparedStatement p = newTransact(baseQuery, othCon);
+			ClientPreparedStatement p = newTransact(baseQuery, othCon);
 			p.setString(1, ip);
 			p.execute();
 			closePreparedStatement(p);

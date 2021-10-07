@@ -20,9 +20,9 @@ public class ComServer implements Runnable {
 			_t.start();
 		}catch(IOException e)
 		{
-			System.out.println("ComServer : "+e.getMessage());
-			Main.agregaralogdecom("ComServer : "+e.getMessage());
-			Main.agregaralogdeerrores("ComServer : "+e.getMessage());
+			System.out.println("COMServer: "+e.getMessage());
+			Main.agregaralogdecom("COMServer: "+e.getMessage());
+			Main.agregaralogdeerrores("COMServer: "+e.getMessage());
 			Main.cerrarservidores();
 		}
 	}
@@ -39,26 +39,22 @@ public class ComServer implements Runnable {
 				try {
 					if(!_SS.isClosed()) _SS.close();
 					} catch (IOException e1) {}
-				System.out.println("ComServerRun : "+e.getMessage());
-				Main.agregaralogdecom("ComServerRun : "+e.getMessage());
-				Main.agregaralogdeerrores("ComServerRun : "+e.getMessage());
+				System.out.println("COMServer Ejecutando: "+e.getMessage());
+				Main.agregaralogdecom("COMServer Ejecutando: "+e.getMessage());
+				Main.agregaralogdeerrores("COMServer Ejecutando: "+e.getMessage());
 			}
 		}
 	}
 	
-	public void kickAll()
-	{
-		try
-		{
+	public void kickAll() {
+		try {
 			_SS.close();
-		}catch(Exception e)
-		{
+		}catch(Exception e) {
 			System.out.println("ComServerKickAll : "+e.getMessage());
 			Main.agregaralogdecom("ComServerKickAll : "+e.getMessage());
 			Main.agregaralogdeerrores("ComServerKickAll : "+e.getMessage());
 		}
 	}
-	
 	public Thread getThread() 
 	{
 		return _t;

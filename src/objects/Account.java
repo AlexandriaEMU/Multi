@@ -6,13 +6,13 @@ import realm.RealmThread;
 
 public class Account {
 
-	private int _GUID;
-	private String _name;
-	private String _pass;
-	private String _pseudo;
+	private final int _GUID;
+	private final String _name;
+	private final String _pass;
+	private final String _pseudo;
 	private String _lastIP = "";
-	private String _question;
-	private String _reponse;
+	private final String _question;
+	private final String _reponse;
 	private boolean _banned = false;
 	private int _gmLvl = 0;
 	private int _subscriber = 0;//Timestamp en secondes

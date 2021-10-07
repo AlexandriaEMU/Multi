@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Objects;
 
 import communication.ComServer;
 
@@ -103,10 +104,7 @@ public class Main {
 				Main.REALM_DB_USER = value;
 			}else
 			if(param.equalsIgnoreCase("REALM_DB_PASSWORD")) {
-				if(value == null)
-				Main.REALM_DB_PASSWORD = "";
-				else
-				Main.REALM_DB_PASSWORD = value;
+                Main.REALM_DB_PASSWORD = Objects.requireNonNullElse(value, "");
 			}else
 			if(param.equalsIgnoreCase("REALM_DB_NAME")) {
 				Main.REALM_DB_NAME = value;

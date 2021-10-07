@@ -4,15 +4,15 @@ import communication.ComThread;
 
 public class GameServer
 {
-	private int ID;
-	private String IP;
-	private int Port;
+	private final int ID;
+	private final String IP;
+	private final int Port;
 	private int State;
-	private String HostDB;
-	private String DBName;
-	private String DBUser;
+	private final String HostDB;
+	private final String DBName;
+	private final String DBUser;
 	private String DBPassword;
-	private String KEY;
+	private final String KEY;
 	private ComThread exchangeThread = null;
 	private int BlockLevel = 0;
 	private int PlayerLimit = 0;

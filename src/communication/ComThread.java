@@ -61,23 +61,23 @@ public class ComThread implements Runnable {
 	{
 		try
 		{
-			String packet = "";
+			StringBuilder packet = new StringBuilder();
 			char charCur[] = new char[1];
 			
 			while(_in.read(charCur, 0, 1)!=-1 && Main.isRunning)
 	    	{
 				if (charCur[0] != '\u0000' && charCur[0] != '\n' && charCur[0] != '\r')
 		    	{
-	    			packet += charCur[0];
-		    	}else if(!packet.isEmpty())
+	    			packet.append(charCur[0]);
+		    	}else if(packet.length() > 0)
 		    	{
 		    		if(Main.REALM_DEBUG)
 		    		{
 		    			System.out.println("ComThread: Recv << "+packet);
 		    			Main.agregaralogdecom("ComThread: Recv << "+packet);
 		    		}
-		    		parsePacket(packet);
-		    		packet = "";
+		    		parsePacket(packet.toString());
+		    		packet = new StringBuilder();
 		    	}
 	    	}
 		}catch(IOException e)
@@ -217,40 +217,36 @@ public class ComThread implements Runnable {
 		switch (packet.charAt(0))
 		{
 		case 'G'://Game && Get
-			switch (packet.charAt(1))
-			{
-			case 'A'://Add
-				Main.agregaralogdecom("ComThread : Packet GA recu, ajout d'un serveur...");
-				System.out.println("ComThread : Packet GA recu, ajout d'un serveur...");
-				String key = packet.substring(2);
-				Main.agregaralogdecom("ComThread : Serveur KEY : "+key);
-				System.out.println("ComThread : Serveur KEY : "+key);
-				for(GameServer G : Realm.GameServers.values())
-				{
-					if(key.equalsIgnoreCase(G.getKey()))
-						_server = G;
-				}
-				if(_server == null)
-				{
-					kick();
-					return;
-				}
-				_server.setThread(this);
-				_server.setState(1);
-				Main.agregaralogdecom("ComThread : Serveur OK!");
-				System.out.println("ComThread : Serveur OK!");
-			break;
-			case 'O'://Online
-				if (_server == null)
-				{
-					kick();
-					return;
-				}
-				String[] str = packet.substring(2).split(";");
-				_server.set_PlayerLimit(Integer.parseInt(str[0]));
-				_server.set_NumPlayer(Integer.parseInt(str[1]));
-			break;
-			}
+            switch (packet.charAt(1)) {
+                case 'A' -> {//Add
+                    Main.agregaralogdecom("ComThread : Packet GA recu, ajout d'un serveur...");
+                    System.out.println("ComThread : Packet GA recu, ajout d'un serveur...");
+                    String key = packet.substring(2);
+                    Main.agregaralogdecom("ComThread : Serveur KEY : " + key);
+                    System.out.println("ComThread : Serveur KEY : " + key);
+                    for (GameServer G : Realm.GameServers.values()) {
+                        if (key.equalsIgnoreCase(G.getKey()))
+                            _server = G;
+                    }
+                    if (_server == null) {
+                        kick();
+                        return;
+                    }
+                    _server.setThread(this);
+                    _server.setState(1);
+                    Main.agregaralogdecom("ComThread : Serveur OK!");
+                    System.out.println("ComThread : Serveur OK!");
+                }
+                case 'O' -> {//Online
+                    if (_server == null) {
+                        kick();
+                        return;
+                    }
+                    String[] str = packet.substring(2).split(";");
+                    _server.set_PlayerLimit(Integer.parseInt(str[0]));
+                    _server.set_NumPlayer(Integer.parseInt(str[1]));
+                }
+            }
 		break;
 		case 'S'://Server
 			if (_server == null)
@@ -258,24 +254,23 @@ public class ComThread implements Runnable {
 				kick();
 				return;
 			}
-			switch (packet.charAt(1))
-			{
-			case 'O'://Open
-				Main.agregaralogdecom("ComThread : Packet SO recu, changement d'etat : 1.");
-				System.out.println("ComThread : Packet SO recu, changement d'etat : 1.");
-				_server.setState(1);
-			break;
-			case 'S'://Save
-				Main.agregaralogdecom("ComThread : Packet SS recu, changement d'etat : 2.");
-				System.out.println("ComThread : Packet SS recu, changement d'etat : 2.");
-				_server.setState(2);
-			break;
-			case 'D'://Disconnected
-				Main.agregaralogdecom("ComThread : Packet SD recu, changement d'etat : 0.");
-				System.out.println("ComThread : Packet SD recu, changement d'etat : 1.");
-				_server.setState(0);
-			break;
-			}
+            switch (packet.charAt(1)) {
+                case 'O' -> {//Open
+                    Main.agregaralogdecom("ComThread : Packet SO recu, changement d'etat : 1.");
+                    System.out.println("ComThread : Packet SO recu, changement d'etat : 1.");
+                    _server.setState(1);
+                }
+                case 'S' -> {//Save
+                    Main.agregaralogdecom("ComThread : Packet SS recu, changement d'etat : 2.");
+                    System.out.println("ComThread : Packet SS recu, changement d'etat : 2.");
+                    _server.setState(2);
+                }
+                case 'D' -> {//Disconnected
+                    Main.agregaralogdecom("ComThread : Packet SD recu, changement d'etat : 0.");
+                    System.out.println("ComThread : Packet SD recu, changement d'etat : 1.");
+                    _server.setState(0);
+                }
+            }
 		break;
 		case 'R'://RealmThread
 			if (_server == null)
@@ -283,20 +278,19 @@ public class ComThread implements Runnable {
 				kick();
 				return;
 			}
-			switch (packet.charAt(1))
-			{
-			case 'G'://GMLEVEL BLOCK, arg : int[level]
-				Main.agregaralogdecom("ComThread : Packet RG recu, blocage du serveur au GMlevels < "+Integer.parseInt(packet.substring(2)));
-				System.out.println("ComThread : Packet RG recu, blocage du serveur au GMlevels < "+Integer.parseInt(packet.substring(2)));
-				_server.setBlockLevel(Integer.parseInt(packet.substring(2)));
-			break;
-			case 'A'://ADD BANIP, arg : String[ip]
-				Main.agregaralogdecom("ComThread : Packet RA recu, ban de l'IP : "+packet.substring(2));
-				System.out.println("ComThread : Packet RA recu, ban de l'IP : "+packet.substring(2));
-				SQLManager.ADD_BANIP(packet.substring(2));
-				Realm.BAN_IP += packet.substring(2)+",";
-			break;
-			}
+            switch (packet.charAt(1)) {
+                case 'G' -> {//GMLEVEL BLOCK, arg : int[level]
+                    Main.agregaralogdecom("ComThread : Packet RG recu, blocage du serveur au GMlevels < " + Integer.parseInt(packet.substring(2)));
+                    System.out.println("ComThread : Packet RG recu, blocage du serveur au GMlevels < " + Integer.parseInt(packet.substring(2)));
+                    _server.setBlockLevel(Integer.parseInt(packet.substring(2)));
+                }
+                case 'A' -> {//ADD BANIP, arg : String[ip]
+                    Main.agregaralogdecom("ComThread : Packet RA recu, ban de l'IP : " + packet.substring(2));
+                    System.out.println("ComThread : Packet RA recu, ban de l'IP : " + packet.substring(2));
+                    SQLManager.ADD_BANIP(packet.substring(2));
+                    Realm.BAN_IP += packet.substring(2) + ",";
+                }
+            }
 		break;
 		}
 		for (Account r : Realm.getAccountsMap().values())

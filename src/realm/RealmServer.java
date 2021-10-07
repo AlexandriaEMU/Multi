@@ -10,7 +10,7 @@ public class RealmServer implements Runnable {
 
 	private ServerSocket _SS;
 	private Thread _t;
-	private ArrayList<RealmThread> _clients = new ArrayList<RealmThread>();
+	private final ArrayList<RealmThread> _clients = new ArrayList<>();
 
 	public RealmServer()
 	{
@@ -59,8 +59,7 @@ public class RealmServer implements Runnable {
 			Main.agregaralogdemulti("RealmServerKickAll : "+e.getMessage());
 			Main.agregaralogdeerrores("RealmServerKickAll : "+e.getMessage());
 		}
-		ArrayList<RealmThread> c = new ArrayList<RealmThread>();
-		c.addAll(_clients);
+		ArrayList<RealmThread> c = new ArrayList<>(_clients);
 		 for(RealmThread RT : c)
 		 {
 		 	try
