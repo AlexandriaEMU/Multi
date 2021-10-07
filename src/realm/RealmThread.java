@@ -10,7 +10,7 @@ import java.util.Map.Entry;
 import objects.Account;
 import objects.GameServer;
 
-import common.Ancestra;
+import common.Main;
 import common.SQLManager;
 import common.SocketManager;
 import common.Realm;
@@ -68,18 +68,18 @@ public class RealmThread implements Runnable {
 			SocketManager.SEND_POLICY_FILE(_out);
 			_hashKey = SocketManager.SEND_HC_PACKET(_out);
 			
-			while(_in.read(charCur, 0, 1) != -1 && Ancestra.isRunning)
+			while(_in.read(charCur, 0, 1) != -1 && Main.isRunning)
 			{
 				if(charCur[0] != '\u0000' && charCur[0] != '\n' && charCur[0] != '\r')
 				{
 					packet += charCur[0];
 				}else if(!packet.isEmpty())
 				{
-					Ancestra.addToRealmLog("Realm: Recv << "+packet);
-					if(Ancestra.REALM_DEBUG)
+					Main.agregaralogdemulti("Realm: Recv << "+packet);
+					if(Main.REALM_DEBUG)
 					{
 						System.out.println("Realm: Recv << "+packet);
-						Ancestra.addToRealmLog("Realm: Recv << "+packet);
+						Main.agregaralogdemulti("Realm: Recv << "+packet);
 					}
 					_packetNum++;
 					parsePacket(packet);
@@ -123,8 +123,8 @@ public class RealmThread implements Runnable {
 	{
 		try
 		{
-			Ancestra.realmServer.delClient(this);
-			Ancestra.addToRealmLog("Client was kicked by the server.");
+			Main.realmServer.delClient(this);
+			Main.agregaralogdemulti("Client was kicked by the server.");
 			System.out.println("Client was kicked by the server.");
 			_in.close();
 			_out.close();
@@ -138,8 +138,8 @@ public class RealmThread implements Runnable {
 		}catch(IOException e)
 		{
 			System.out.println("RealmThreadKick : "+e.getMessage());
-			Ancestra.addToRealmLog("RealmThreadKick : "+e.getMessage());
-			Ancestra.addToErrorLog("RealmThreadKick : "+e.getMessage());
+			Main.agregaralogdemulti("RealmThreadKick : "+e.getMessage());
+			Main.agregaralogdeerrores("RealmThreadKick : "+e.getMessage());
 		}
 	}
 	
@@ -154,14 +154,14 @@ public class RealmThread implements Runnable {
 	{
 		try
 		{
-			Ancestra.addToRealmLog("RealmThread : Refreshing server list.");
+			Main.agregaralogdemulti("RealmThread : Refreshing server list.");
 			SocketManager.refresh(_out);
 			System.out.println("RealmThread : Refreshing server list.");
 		}catch(Exception e)
 		{
 			System.out.println("RealmThreadRefresh : "+e.getMessage());
-			Ancestra.addToRealmLog("RealmThreadRefresh : "+e.getMessage());
-			Ancestra.addToErrorLog("RealmThreadRefresh : "+e.getMessage());
+			Main.agregaralogdemulti("RealmThreadRefresh : "+e.getMessage());
+			Main.agregaralogdeerrores("RealmThreadRefresh : "+e.getMessage());
 		}
 	}
 	
@@ -170,7 +170,7 @@ public class RealmThread implements Runnable {
 		switch (_packetNum) 
 		{
 		case 1:// Version
-			if(!packet.equalsIgnoreCase(Ancestra.CLIENT_VERSION) && !Ancestra.REALM_IGNORE_VERSION)
+			if(!packet.equalsIgnoreCase(Main.CLIENT_VERSION) && !Main.REALM_IGNORE_VERSION)
 			{
 				SocketManager.SEND_REQUIRED_VERSION(_out);
 				kick();
@@ -189,13 +189,13 @@ public class RealmThread implements Runnable {
 			_hashPass = packet;
 			Account acc = Realm.getCompteByName(_accountName);
 			
-			if(acc != null && acc.isValidPass(_hashPass, _hashKey))//Si il existe alors il est connecté au Realm && mot de passe OK
+			if(acc != null && acc.isValidPass(_hashPass, _hashKey))//Si il existe alors il est connectï¿½ au Realm && mot de passe OK
 			{
 				SocketManager.SEND_ALREADY_CONNECTED(acc.getRealmThread()._out);
 				SocketManager.SEND_ALREADY_CONNECTED(_out);
 				return;
 			}
-			if(acc != null && !acc.isValidPass(_hashPass, _hashKey))//Si il existe alors il est connecté au Realm && mot de passe Invalide
+			if(acc != null && !acc.isValidPass(_hashPass, _hashKey))//Si il existe alors il est connectï¿½ au Realm && mot de passe Invalide
 			{
 				SocketManager.SEND_LOGIN_ERROR(_out);
 				return;
@@ -231,10 +231,10 @@ public class RealmThread implements Runnable {
 				return;
 			}
 			
-			for(Entry<Integer, GameServer> G : Realm.GameServers.entrySet())//On vérifie qu'il n'est pas connecté dans un GameThread
+			for(Entry<Integer, GameServer> G : Realm.GameServers.entrySet())//On vï¿½rifie qu'il n'est pas connectï¿½ dans un GameThread
 			{
 				if(G.getValue().getThread() == null) continue;
-				G.getValue().getThread().sendDeco(_compte.get_GUID());//On le déconnete du GameThread
+				G.getValue().getThread().sendDeco(_compte.get_GUID());//On le dï¿½connete du GameThread
 			}
 			
 			if(_compte.getRealmThread() != null)//Ne devrait pas arriver
@@ -284,7 +284,7 @@ public class RealmThread implements Runnable {
 					return;
 				}
 				System.out.println("RealmThreadOUT : Connexion to the server with the following ip:" +ip2);
-				Ancestra.addToRealmLog("RealmThreadOUT : Connexion to the server with the following ip:" +ip2);
+				Main.agregaralogdemulti("RealmThreadOUT : Connexion to the server with the following ip:" +ip2);
 				SocketManager.SEND_GAME_SERVER_IP(_out, _compte.get_GUID(), number);
 			}else
 			if(packet.substring(0, 2).equals("AF"))

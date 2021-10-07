@@ -3,7 +3,7 @@ package communication;
 import java.io.IOException;
 import java.net.ServerSocket;
 
-import common.Ancestra;
+import common.Main;
 
 public class ComServer implements Runnable {
 	
@@ -14,22 +14,22 @@ public class ComServer implements Runnable {
 	{
 		try
 		{
-			_SS = new ServerSocket(Ancestra.REALM_COM_PORT);
+			_SS = new ServerSocket(Main.REALM_COM_PORT);
 			_t = new Thread(this);
 			_t.setDaemon(true);
 			_t.start();
 		}catch(IOException e)
 		{
 			System.out.println("ComServer : "+e.getMessage());
-			Ancestra.addToComLog("ComServer : "+e.getMessage());
-			Ancestra.addToErrorLog("ComServer : "+e.getMessage());
-			Ancestra.closeServers();
+			Main.agregaralogdecom("ComServer : "+e.getMessage());
+			Main.agregaralogdeerrores("ComServer : "+e.getMessage());
+			Main.cerrarservidores();
 		}
 	}
 	
 	public void run() 
 	{
-		while(Ancestra.isRunning)
+		while(Main.isRunning)
 		{
 			try
 			{
@@ -40,8 +40,8 @@ public class ComServer implements Runnable {
 					if(!_SS.isClosed()) _SS.close();
 					} catch (IOException e1) {}
 				System.out.println("ComServerRun : "+e.getMessage());
-				Ancestra.addToComLog("ComServerRun : "+e.getMessage());
-				Ancestra.addToErrorLog("ComServerRun : "+e.getMessage());
+				Main.agregaralogdecom("ComServerRun : "+e.getMessage());
+				Main.agregaralogdeerrores("ComServerRun : "+e.getMessage());
 			}
 		}
 	}
@@ -54,8 +54,8 @@ public class ComServer implements Runnable {
 		}catch(Exception e)
 		{
 			System.out.println("ComServerKickAll : "+e.getMessage());
-			Ancestra.addToComLog("ComServerKickAll : "+e.getMessage());
-			Ancestra.addToErrorLog("ComServerKickAll : "+e.getMessage());
+			Main.agregaralogdecom("ComServerKickAll : "+e.getMessage());
+			Main.agregaralogdeerrores("ComServerKickAll : "+e.getMessage());
 		}
 	}
 	

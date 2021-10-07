@@ -23,7 +23,7 @@ public class SQLManager
 	
 	public synchronized static ResultSet executeQuery(String query,String DBNAME) throws SQLException
 	{
-		if(!Ancestra.isInit)
+		if(!Main.isInit)
 			return null;
 		Connection DB = othCon;
 		
@@ -36,7 +36,7 @@ public class SQLManager
 	
 	public synchronized static ResultSet executeQueryG(String query, GameServer G) throws SQLException
 	{
-		if (!Ancestra.isInit)
+		if (!Main.isInit)
 			return null;
 		try
 		{
@@ -51,7 +51,7 @@ public class SQLManager
 		}catch(SQLException e)
 		{
 			System.out.println("SQL : "+e.getMessage());
-			Ancestra.addToErrorLog("SQL : "+e.getMessage());
+			Main.agregaralogdeerrores("SQL : "+e.getMessage());
 			e.printStackTrace();
 			return null;
 		}
@@ -81,7 +81,7 @@ public class SQLManager
 		}catch(SQLException e)
 		{
 			System.out.println("SQL : "+e.getMessage());
-			Ancestra.addToErrorLog("SQL : "+e.getMessage());
+			Main.agregaralogdeerrores("SQL : "+e.getMessage());
 			e.printStackTrace();
 			commitTransacts();
 		}
@@ -97,8 +97,8 @@ public class SQLManager
 			
 		}catch (Exception e)
 		{
-			System.out.println("SQL : Erreur à la fermeture des connexions : "+e.getMessage());
-			Ancestra.addToErrorLog("SQL : Erreur à la fermeture des connexions : "+e.getMessage());
+			System.out.println("SQL : Erreur ï¿½ la fermeture des connexions : "+e.getMessage());
+			Main.agregaralogdeerrores("SQL : Erreur ï¿½ la fermeture des connexions : "+e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -107,12 +107,12 @@ public class SQLManager
 	{
 		try
 		{
-			othCon = DriverManager.getConnection("jdbc:mysql://"+Ancestra.REALM_DB_HOST+"/"+Ancestra.REALM_DB_NAME,Ancestra.REALM_DB_USER,Ancestra.REALM_DB_PASSWORD);
+			othCon = DriverManager.getConnection("jdbc:mysql://"+ Main.REALM_DB_HOST+"/"+ Main.REALM_DB_NAME, Main.REALM_DB_USER, Main.REALM_DB_PASSWORD);
 			othCon.setAutoCommit(false);
 			
 			if(!othCon.isValid(1000))
 			{
-				Ancestra.addToErrorLog("SQL : Connexion a la BD invalide!");
+				Main.agregaralogdeerrores("SQL : Connexion a la BD invalide!");
 				return false;
 			}
 			
@@ -123,7 +123,7 @@ public class SQLManager
 		}catch(SQLException e)
 		{
 			System.out.println("SQL : "+e.getMessage());
-			Ancestra.addToErrorLog("SQL : "+e.getMessage());
+			Main.agregaralogdeerrores("SQL : "+e.getMessage());
 			e.printStackTrace();
 			return false;
 		}
@@ -143,7 +143,7 @@ public class SQLManager
 					needCommit = false;
 					
 				}
-			}, Ancestra.REALM_DB_COMMIT, Ancestra.REALM_DB_COMMIT);
+			}, Main.REALM_DB_COMMIT, Main.REALM_DB_COMMIT);
 		}
 		else
 			timerCommit.cancel();
@@ -158,7 +158,7 @@ public class SQLManager
 		}catch(SQLException e) 
 		{
 			System.out.println("SQL : "+e.getMessage());
-			Ancestra.addToErrorLog("SQL : "+e.getMessage());
+			Main.agregaralogdeerrores("SQL : "+e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -172,7 +172,7 @@ public class SQLManager
 		}catch(SQLException e) 
 		{
 			System.out.println("SQL : "+e.getMessage());
-			Ancestra.addToErrorLog("SQL : "+e.getMessage());
+			Main.agregaralogdeerrores("SQL : "+e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -192,13 +192,13 @@ public class SQLManager
 			closePreparedStatement(p);
 		}catch(SQLException e)
 		{
-			Ancestra.addToErrorLog("SQL : "+e.getMessage());
+			Main.agregaralogdeerrores("SQL : "+e.getMessage());
 			try {
 				if(othCon.isClosed()) setUpConnexion();
 				if(!othCon.isClosed()) UPDATE_ACCOUNT(ip, UpdateSub, Sub, guid);
 			} catch (SQLException e1) {
 				System.out.println("SQL : "+e.getMessage());
-				Ancestra.addToErrorLog("SQL : "+e.getMessage());
+				Main.agregaralogdeerrores("SQL : "+e.getMessage());
 				e1.printStackTrace();
 			}
 		}
@@ -216,7 +216,7 @@ public class SQLManager
 		}catch(SQLException e)
 		{
 			System.out.println("SQL : "+e.getMessage());
-			Ancestra.addToErrorLog("SQL : "+e.getMessage());
+			Main.agregaralogdeerrores("SQL : "+e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -233,13 +233,13 @@ public class SQLManager
 			closeResultSet(RS);
 		}catch(SQLException e)
 		{
-			Ancestra.addToErrorLog("SQL : "+e.getMessage());
+			Main.agregaralogdeerrores("SQL : "+e.getMessage());
 			try {
 				if(othCon.isClosed()) setUpConnexion();
 				if(!othCon.isClosed()) getNumberPersosOnThisServer(guid,ID);
 			} catch (SQLException e1) {
 				System.out.println("SQL : "+e.getMessage());
-				Ancestra.addToErrorLog("SQL : "+e.getMessage());
+				Main.agregaralogdeerrores("SQL : "+e.getMessage());
 				e1.printStackTrace();
 			}
 		}
@@ -250,7 +250,7 @@ public class SQLManager
 	{
 		try
 		{
-			ResultSet RS = SQLManager.executeQuery("SELECT * from accounts WHERE `account` LIKE '"+user+"';",Ancestra.REALM_DB_NAME);
+			ResultSet RS = SQLManager.executeQuery("SELECT * from accounts WHERE `account` LIKE '"+user+"';", Main.REALM_DB_NAME);
 			
 			while(RS.next())
 			{
@@ -272,13 +272,13 @@ public class SQLManager
 			closeResultSet(RS);
 		}catch(SQLException e)
 		{
-			Ancestra.addToErrorLog("SQL : "+e.getMessage());
+			Main.agregaralogdeerrores("SQL : "+e.getMessage());
 			try {
 				if(othCon.isClosed()) setUpConnexion();
 				if(!othCon.isClosed()) LOAD_ACCOUNT_BY_USER(user);
 			} catch (SQLException e1) {
 				System.out.println("SQL : "+e.getMessage());
-				Ancestra.addToErrorLog("SQL : "+e.getMessage());
+				Main.agregaralogdeerrores("SQL : "+e.getMessage());
 				e1.printStackTrace();
 			}
 		}
@@ -288,7 +288,7 @@ public class SQLManager
 	{
 		try
 		{
-		ResultSet RS = SQLManager.executeQuery("SELECT * from gameservers;", Ancestra.REALM_DB_NAME);
+		ResultSet RS = SQLManager.executeQuery("SELECT * from gameservers;", Main.REALM_DB_NAME);
 		while(RS.next())
 		{
 			Realm.GameServers.put(
@@ -308,7 +308,7 @@ public class SQLManager
 		}catch(SQLException e)
 		{
 			System.out.println("SQL : "+e.getMessage());
-			Ancestra.addToErrorLog("SQL : "+e.getMessage());
+			Main.agregaralogdeerrores("SQL : "+e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -318,7 +318,7 @@ public class SQLManager
 		int i = 0;
 		try
 		{
-			ResultSet RS = SQLManager.executeQuery("SELECT ip from banip;",Ancestra.REALM_DB_NAME); 
+			ResultSet RS = SQLManager.executeQuery("SELECT ip from banip;", Main.REALM_DB_NAME);
 		      while (RS.next()) 
 		      { 
 		    	  	if(!RS.isLast())
@@ -332,7 +332,7 @@ public class SQLManager
 		}catch(SQLException e)
 		{
 			System.out.println("SQL : "+e.getMessage());
-			Ancestra.addToErrorLog("SQL : "+e.getMessage());
+			Main.agregaralogdeerrores("SQL : "+e.getMessage());
 			e.printStackTrace();
 		}
 		return i;
@@ -349,13 +349,13 @@ public class SQLManager
 			closePreparedStatement(p);
 		}catch(SQLException e)
 		{
-			Ancestra.addToErrorLog("SQL : "+e.getMessage());
+			Main.agregaralogdeerrores("SQL : "+e.getMessage());
 			try {
 				if(othCon.isClosed()) setUpConnexion();
 				if(!othCon.isClosed()) ADD_BANIP(ip);
 			} catch (SQLException e1) {
 				System.out.println("SQL : "+e.getMessage());
-				Ancestra.addToErrorLog("SQL : "+e.getMessage());
+				Main.agregaralogdeerrores("SQL : "+e.getMessage());
 				e1.printStackTrace();
 			}
 		}

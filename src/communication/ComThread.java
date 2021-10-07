@@ -10,7 +10,7 @@ import java.net.Socket;
 
 import objects.Account;
 import objects.GameServer;
-import common.Ancestra;
+import common.Main;
 import common.SQLManager;
 import common.Realm;
 
@@ -45,7 +45,7 @@ public class ComThread implements Runnable {
 			if (_server != null)
 			{
 				_server.setState(0);
-				Ancestra.addToComLog("ComThread : Server revoked.");
+				Main.agregaralogdecom("ComThread : Server revoked.");
 				System.out.println("ComThread : Server revoked.");
 			for (Account acc : Realm.getAccountsMap().values())
 			{
@@ -64,17 +64,17 @@ public class ComThread implements Runnable {
 			String packet = "";
 			char charCur[] = new char[1];
 			
-			while(_in.read(charCur, 0, 1)!=-1 && Ancestra.isRunning)
+			while(_in.read(charCur, 0, 1)!=-1 && Main.isRunning)
 	    	{
 				if (charCur[0] != '\u0000' && charCur[0] != '\n' && charCur[0] != '\r')
 		    	{
 	    			packet += charCur[0];
 		    	}else if(!packet.isEmpty())
 		    	{
-		    		if(Ancestra.REALM_DEBUG)
+		    		if(Main.REALM_DEBUG)
 		    		{
 		    			System.out.println("ComThread: Recv << "+packet);
-		    			Ancestra.addToComLog("ComThread: Recv << "+packet);
+		    			Main.agregaralogdecom("ComThread: Recv << "+packet);
 		    		}
 		    		parsePacket(packet);
 		    		packet = "";
@@ -89,7 +89,7 @@ public class ComThread implements Runnable {
 			if (_server != null)
 			{
 				_server.setState(0);
-				Ancestra.addToComLog("ComThread : Server revoked.");
+				Main.agregaralogdecom("ComThread : Server revoked.");
 				System.out.println("ComThread : Server revoked.");
 			for (Account acc : Realm.getAccountsMap().values())
 			{
@@ -110,7 +110,7 @@ public class ComThread implements Runnable {
 			if (_server != null)
 			{
 				_server.setState(0);
-				Ancestra.addToComLog("ComThread : Server revoked.");
+				Main.agregaralogdecom("ComThread : Server revoked.");
 				System.out.println("ComThread : Server revoked.");
 			for (Account acc : Realm.getAccountsMap().values())
 			{
@@ -129,12 +129,12 @@ public class ComThread implements Runnable {
 	{
 		try
 		{
-			Ancestra.addToComLog("ComThread : The GameServer has broken the connection.");
+			Main.agregaralogdecom("ComThread : The GameServer has broken the connection.");
 			System.out.println("ComThread : The GameServer has broken the connection.");
 			if (_server != null)
 			{
 				_server.setState(0);
-				Ancestra.addToComLog("ComThread : Server revoked.");
+				Main.agregaralogdecom("ComThread : Server revoked.");
 				System.out.println("ComThread : Server revoked.");
 			for (Account acc : Realm.getAccountsMap().values())
 			{
@@ -150,8 +150,8 @@ public class ComThread implements Runnable {
 		}catch(IOException e)
 		{
 			System.out.println("ComThreadKick : "+e.getMessage());
-			Ancestra.addToErrorLog("ComThreadKick : "+e.getMessage());
-			Ancestra.addToComLog("ComThreadKick : "+e.getMessage());
+			Main.agregaralogdeerrores("ComThreadKick : "+e.getMessage());
+			Main.agregaralogdecom("ComThreadKick : "+e.getMessage());
 		}
 	}
 	
@@ -159,8 +159,8 @@ public class ComThread implements Runnable {
 	{
 		System.out.println("ComThread: Send>>LO"+guid);
 		System.out.println("ComThread : Envoi du paquet de LoginOut ...");
-		Ancestra.addToComLog("ComThread: Send>>LO"+guid);
-		Ancestra.addToComLog("ComThread : Envoi du paquet de LoginOut ...");
+		Main.agregaralogdecom("ComThread: Send>>LO"+guid);
+		Main.agregaralogdecom("ComThread : Envoi du paquet de LoginOut ...");
 		try
 		{
 			_out.print("LO"+guid+(char)0x00);//LogOut
@@ -169,8 +169,8 @@ public class ComThread implements Runnable {
 		}catch(Exception e)
 		{
 			System.out.println("ComThreadSendDeco : "+e.getMessage());
-			Ancestra.addToErrorLog("ComThreadSendDeco : "+e.getMessage());
-			Ancestra.addToComLog("ComThreadSendDeco : "+e.getMessage());
+			Main.agregaralogdeerrores("ComThreadSendDeco : "+e.getMessage());
+			Main.agregaralogdecom("ComThreadSendDeco : "+e.getMessage());
 		}
 	}
 	
@@ -178,8 +178,8 @@ public class ComThread implements Runnable {
 	{
 		System.out.println("ComThread: Send>>AW"+str);
 		System.out.println("ComThread : Envoi du paquet d'ajout de compte.");
-		Ancestra.addToComLog("ComThread: Send>>AW"+str);
-		Ancestra.addToComLog("ComThread : Envoi du paquet d'ajout de compte.");
+		Main.agregaralogdecom("ComThread: Send>>AW"+str);
+		Main.agregaralogdecom("ComThread : Envoi du paquet d'ajout de compte.");
 		try
 		{
 			_out.print("AW"+str+(char)0x00);//AddWaiting
@@ -188,8 +188,8 @@ public class ComThread implements Runnable {
 		}catch(Exception e)
 		{
 			System.out.println("ComThreadSendAddWaiting : "+e.getMessage());
-			Ancestra.addToErrorLog("ComThreadSendAddWaiting : "+e.getMessage());
-			Ancestra.addToComLog("ComThreadSendAddWaiting : "+e.getMessage());
+			Main.agregaralogdeerrores("ComThreadSendAddWaiting : "+e.getMessage());
+			Main.agregaralogdecom("ComThreadSendAddWaiting : "+e.getMessage());
 		}
 	}
 	
@@ -197,8 +197,8 @@ public class ComThread implements Runnable {
 	{
 		System.out.println("ComThread: Send>>GO");
 		System.out.println("ComThread : Envoi du paquet GetOnline ...");
-		Ancestra.addToComLog("ComThread: Send>>GO");
-		Ancestra.addToComLog("ComThread : Envoi du paquet GetOnline ...");
+		Main.agregaralogdecom("ComThread: Send>>GO");
+		Main.agregaralogdecom("ComThread : Envoi du paquet GetOnline ...");
 		try
 		{
 			_out.print("GO"+(char)0x00);//GetOnline
@@ -207,8 +207,8 @@ public class ComThread implements Runnable {
 		}catch(Exception e)
 		{
 			System.out.println("ComThreadSendGetOnline : "+e.getMessage());
-			Ancestra.addToComLog("ComThreadSendGetOnline : "+e.getMessage());
-			Ancestra.addToErrorLog("ComThreadSendGetOnline : "+e.getMessage());
+			Main.agregaralogdecom("ComThreadSendGetOnline : "+e.getMessage());
+			Main.agregaralogdeerrores("ComThreadSendGetOnline : "+e.getMessage());
 		}
 	}
 	
@@ -220,10 +220,10 @@ public class ComThread implements Runnable {
 			switch (packet.charAt(1))
 			{
 			case 'A'://Add
-				Ancestra.addToComLog("ComThread : Packet GA recu, ajout d'un serveur...");
+				Main.agregaralogdecom("ComThread : Packet GA recu, ajout d'un serveur...");
 				System.out.println("ComThread : Packet GA recu, ajout d'un serveur...");
 				String key = packet.substring(2);
-				Ancestra.addToComLog("ComThread : Serveur KEY : "+key);
+				Main.agregaralogdecom("ComThread : Serveur KEY : "+key);
 				System.out.println("ComThread : Serveur KEY : "+key);
 				for(GameServer G : Realm.GameServers.values())
 				{
@@ -237,7 +237,7 @@ public class ComThread implements Runnable {
 				}
 				_server.setThread(this);
 				_server.setState(1);
-				Ancestra.addToComLog("ComThread : Serveur OK!");
+				Main.agregaralogdecom("ComThread : Serveur OK!");
 				System.out.println("ComThread : Serveur OK!");
 			break;
 			case 'O'://Online
@@ -261,17 +261,17 @@ public class ComThread implements Runnable {
 			switch (packet.charAt(1))
 			{
 			case 'O'://Open
-				Ancestra.addToComLog("ComThread : Packet SO recu, changement d'etat : 1.");
+				Main.agregaralogdecom("ComThread : Packet SO recu, changement d'etat : 1.");
 				System.out.println("ComThread : Packet SO recu, changement d'etat : 1.");
 				_server.setState(1);
 			break;
 			case 'S'://Save
-				Ancestra.addToComLog("ComThread : Packet SS recu, changement d'etat : 2.");
+				Main.agregaralogdecom("ComThread : Packet SS recu, changement d'etat : 2.");
 				System.out.println("ComThread : Packet SS recu, changement d'etat : 2.");
 				_server.setState(2);
 			break;
 			case 'D'://Disconnected
-				Ancestra.addToComLog("ComThread : Packet SD recu, changement d'etat : 0.");
+				Main.agregaralogdecom("ComThread : Packet SD recu, changement d'etat : 0.");
 				System.out.println("ComThread : Packet SD recu, changement d'etat : 1.");
 				_server.setState(0);
 			break;
@@ -286,12 +286,12 @@ public class ComThread implements Runnable {
 			switch (packet.charAt(1))
 			{
 			case 'G'://GMLEVEL BLOCK, arg : int[level]
-				Ancestra.addToComLog("ComThread : Packet RG recu, blocage du serveur au GMlevels < "+Integer.parseInt(packet.substring(2)));
+				Main.agregaralogdecom("ComThread : Packet RG recu, blocage du serveur au GMlevels < "+Integer.parseInt(packet.substring(2)));
 				System.out.println("ComThread : Packet RG recu, blocage du serveur au GMlevels < "+Integer.parseInt(packet.substring(2)));
 				_server.setBlockLevel(Integer.parseInt(packet.substring(2)));
 			break;
 			case 'A'://ADD BANIP, arg : String[ip]
-				Ancestra.addToComLog("ComThread : Packet RA recu, ban de l'IP : "+packet.substring(2));
+				Main.agregaralogdecom("ComThread : Packet RA recu, ban de l'IP : "+packet.substring(2));
 				System.out.println("ComThread : Packet RA recu, ban de l'IP : "+packet.substring(2));
 				SQLManager.ADD_BANIP(packet.substring(2));
 				Realm.BAN_IP += packet.substring(2)+",";

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 
-import common.Ancestra;
+import common.Main;
 
 public class RealmServer implements Runnable {
 
@@ -16,22 +16,22 @@ public class RealmServer implements Runnable {
 	{
 		try
 		{
-			_SS = new ServerSocket(Ancestra.REALM_PORT);
+			_SS = new ServerSocket(Main.REALM_PORT);
 			_t = new Thread(this);
 			_t.setDaemon(true);
 			_t.start();
 		}catch(IOException e)
 		{
 			System.out.println("RealmServer : "+e.getMessage());
-			Ancestra.addToRealmLog("RealmServer : "+e.getMessage());
-			Ancestra.addToErrorLog("RealmServer : "+e.getMessage());
-			Ancestra.closeServers();
+			Main.agregaralogdemulti("RealmServer : "+e.getMessage());
+			Main.agregaralogdeerrores("RealmServer : "+e.getMessage());
+			Main.cerrarservidores();
 		}
 	}
 
 	public void run()
 	{
-		while(Ancestra.isRunning)
+		while(Main.isRunning)
 		{
 			try
 			{
@@ -42,8 +42,8 @@ public class RealmServer implements Runnable {
 					if(!_SS.isClosed()) _SS.close();
 					} catch (IOException e1) {}
 				System.out.println("RealmServerRun : "+e.getMessage());
-				Ancestra.addToRealmLog("RealmServerRun : "+e.getMessage());
-				Ancestra.addToErrorLog("RealmServerRun : "+e.getMessage());
+				Main.agregaralogdemulti("RealmServerRun : "+e.getMessage());
+				Main.agregaralogdeerrores("RealmServerRun : "+e.getMessage());
 			}
 		}
 	}
@@ -56,8 +56,8 @@ public class RealmServer implements Runnable {
 		}catch(Exception e)
 		{
 			System.out.println("RealmServerKickAll : "+e.getMessage());
-			Ancestra.addToRealmLog("RealmServerKickAll : "+e.getMessage());
-			Ancestra.addToErrorLog("RealmServerKickAll : "+e.getMessage());
+			Main.agregaralogdemulti("RealmServerKickAll : "+e.getMessage());
+			Main.agregaralogdeerrores("RealmServerKickAll : "+e.getMessage());
 		}
 		ArrayList<RealmThread> c = new ArrayList<RealmThread>();
 		c.addAll(_clients);

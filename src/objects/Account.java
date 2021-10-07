@@ -100,15 +100,15 @@ public class Account {
 	
 	public int get_subscriberTime()//Renvoi le temps restant
 	{
-		if(!Ancestra.USE_SUBSCRIBE) return 525600;
+		if(!Main.USE_SUBSCRIBE) return 525600;
 		if(_subscriber == 0)
 		{
-			//Si non abo ou abo dépasser
+			//Si non abo ou abo dï¿½passer
 			return 0;
 		}else
 		if((System.currentTimeMillis()/1000) > _subscriber)
 		{
-			//Il faut désabonner le compte
+			//Il faut dï¿½sabonner le compte
 			_subscriber = 0;
 			SQLManager.UPDATE_ACCOUNT(_curIP, true, 0, get_GUID());
 			return 0;

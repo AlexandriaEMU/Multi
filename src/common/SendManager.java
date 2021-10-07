@@ -68,8 +68,8 @@ public class SendManager {
 	        			pw.flush();
 	        		}
 	        		
-	    			Ancestra.addToRealmLog("Realm: Send>>"+Totaldata.toString());
-	    			if(Ancestra.REALM_DEBUG) System.out.println("Realm: Send>>"+Totaldata.toString());
+	    			Main.agregaralogdemulti("Realm: Send>>"+Totaldata.toString());
+	    			if(Main.REALM_DEBUG) System.out.println("Realm: Send>>"+Totaldata.toString());
 	        	}
 	        }
 	      };

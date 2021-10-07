@@ -6,7 +6,6 @@ import java.util.Random;
 
 import objects.Account;
 import objects.GameServer;
-import common.Realm;
 
 public class SocketManager
 {
@@ -17,9 +16,9 @@ public class SocketManager
 			packet = CryptManager.toUtf(packet);
 			out.print((packet)+(char)0x00);
 			out.flush();
-			if(Ancestra.REALM_DEBUG)
+			if(Main.REALM_DEBUG)
 			{
-				Ancestra.addToRealmLog("Realm: Send>>"+packet.toString());
+				Main.agregaralogdemulti("Realm: Send>>"+packet.toString());
 				System.out.println("Realm: Send>>"+packet);
 			}
 		}
@@ -39,7 +38,7 @@ public class SocketManager
 	public static void SEND_REQUIRED_VERSION(PrintWriter out) 
 	{
 		StringBuilder packet = new StringBuilder();
-		packet.append("AlEv").append(Ancestra.CLIENT_VERSION);
+		packet.append("AlEv").append(Main.CLIENT_VERSION);
 		send(out, packet.toString());
 	}
 	
