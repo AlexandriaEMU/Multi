@@ -1,0 +1,22 @@
+# Fichero de configuracion de AlexandriaEMU - MULTI
+
+# Puerto del server
+REALM_PORT = 434
+REALM_COM_PORT = 435
+
+# Configuracion del cliente
+CLIENT_VERSION = 1.29.1
+REALM_IGNORE_VERSION = false
+
+# Configuracion de la base de datos
+REALM_DB_HOST = 127.0.0.1
+REALM_DB_USER = root
+REALM_DB_PASSWORD = 
+REALM_DB_NAME = alexandria_multi
+REALM_DB_COMMIT = 3000
+
+# Logs/Debug
+REALM_DEBUG = true
+
+# Abonarse
+USE_SUBSCRIBE = false
