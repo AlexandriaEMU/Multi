@@ -1,2 +1,5 @@
-# Project exclude paths
+/Realm_logs/
+/Error_logs/
+/Com_logs/
+/target/
 /out/
